@@ -23,9 +23,9 @@ int main(int argc, char const *argv[])
 		cout<<"1.push\t2.pop\t3.print\t4.displayMid\t5.deleteMid\n";
 		cin>>ch;
 
-		if(ch==1){
+		if(ch==1){ //push
 			cin>>ele;
-			struct dll* temp;
+			struct dll* temp=new struct dll;
 			temp->data=ele;
 			temp->prev=NULL;
 			temp->next=NULL;
@@ -37,33 +37,38 @@ int main(int argc, char const *argv[])
 				top->next=temp;
 				temp->prev=top;
 				top=temp;
-				if(oddNodes==1)
+				if(oddNodes==0) //even number of elements before inserting new node
 					mid=mid->next;
 			}
 			oddNodes=~oddNodes;
 		}
-		else if(ch==2){
+		else if(ch==2){ //pop
 			if(top==NULL)
-				cout<<"Empty Stack";
+				cout<<"Empty Stack"<<endl;
 			else{
 				top=top->prev;
-				top->next=NULL;
-				if(oddNodes==1)
+				if(top!=NULL)
+					top->next=NULL;
+				if(oddNodes==1) //odd number of elements before popping top
 					mid=mid->prev;
 				oddNodes=~oddNodes;
 			}
 		}
-		else if(ch==3){
+		else if(ch==3){ //print
 			struct dll* temp=top;
-			while(temp!=NULL){
-				cout<<temp->data<<" ";
-				temp=temp->prev;
+			if(top==NULL)
+				cout<<"Empty Stack";
+			else{
+				while(temp!=NULL){
+					cout<<temp->data<<" ";
+					temp=temp->prev;
+				}
 			}
 			cout<<endl;
 		}
-		else if(ch==4)
+		else if(ch==4) //display min
 			cout<<mid->data<<endl;
-		else if(ch==5){
+		else if(ch==5){ //delete min
 			if(mid->prev==NULL){
 				if(mid->next==NULL){//only one node in the stack{
 					mid=NULL;
