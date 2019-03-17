@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 
+// T(n): O(nq); S(n): O(1);
 void rot(int a[], int l, int r){
 	int size=r-l+1;
 	int temp=a[r];
