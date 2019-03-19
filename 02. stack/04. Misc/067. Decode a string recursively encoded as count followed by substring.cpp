@@ -3,6 +3,8 @@
 using namespace std;
 
 //assuming single digit numeric values
+//atoi() not working. otherwise seems fine.
+//T(n): O(n);
 
 string Decode(string str){
 
