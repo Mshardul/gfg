@@ -1,5 +1,5 @@
 #include<iostream>
-#include<deque>
+#include<stack>
 
 using namespace std;
 
@@ -16,29 +16,6 @@ struct node * newNode(int x){
   return temp;
 }
 
-void PrintOrder(deque <struct node *> q){
-  if(q.empty())
-    return;
-  deque<struct node *> temp;
-  struct node *left, *right;
-  int n = q.size();
-  for(int i=0; i<n/2; i++){
-    left = q.front();
-    q.pop_front();
-    right = q.front();
-    q.pop_front();
-    cout<<left->val<<" "<<right->val<<" ";
-    if(left->lc){
-      q.push_back(left->lc);
-      q.push_back(right->rc);
-      q.push_back(left->rc);
-      q.push_back(right->lc);
-    }
-  }
-  cout<<endl;
-  PrintOrder(q);
-  
-}
 int main(int argc, char const *argv[]) {
   struct node *head = newNode(1); 
 
@@ -76,15 +53,19 @@ int main(int argc, char const *argv[]) {
   head->rc->rc->rc->lc  = newNode(30); 
   head->rc->rc->rc->rc  = newNode(31);
   
-  deque<struct node *> q;
-  cout<<head->val<<endl;
+  stack<struct node *> st;
+  st.push(head);
   
-  if(head->lc!=NULL){
-    q.push_back(head->lc);
-    q.push_back(head->rc);
+  struct node * temp;
+  while(!st.empty()){
+    temp = st.top();
+    st.pop();
+    cout<<temp->val<<" ";
+    if(temp->rc!=NULL)
+      st.push(temp->rc);
+    if(temp->lc!=NULL)
+      st.push(temp->lc);
   }
-  
-  PrintOrder(q);
-  
+  cout<<endl;
   return 0;
 }

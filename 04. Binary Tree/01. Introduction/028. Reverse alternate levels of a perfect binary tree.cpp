@@ -16,29 +16,52 @@ struct node * newNode(int x){
   return temp;
 }
 
-void PrintOrder(deque <struct node *> q){
-  if(q.empty())
-    return;
-  deque<struct node *> temp;
-  struct node *left, *right;
+void PrintOrder(deque<struct node *> q){
+  struct node *temp;
   int n = q.size();
-  for(int i=0; i<n/2; i++){
-    left = q.front();
+  for(int i=0; i<n; i++){
+    temp = q.front();
+    cout<<temp->val<<" ";
     q.pop_front();
-    right = q.front();
-    q.pop_front();
-    cout<<left->val<<" "<<right->val<<" ";
-    if(left->lc){
-      q.push_back(left->lc);
-      q.push_back(right->rc);
-      q.push_back(left->rc);
-      q.push_back(right->lc);
-    }
+    if(temp->lc!=NULL)
+      q.push_back(temp->lc);
+    if(temp->rc!=NULL)
+      q.push_back(temp->rc);
   }
-  cout<<endl;
-  PrintOrder(q);
-  
+  if(!q.empty())
+    PrintOrder(q);
 }
+
+void RevLevel(struct node * head, deque<struct node *> temp){
+  static int level = 0;
+  cout<<level<<": ";
+  int n = temp.size();
+  deque<struct node *> dq;
+  if(temp[0]->lc!=NULL){
+    for(int i=0; i<n; i++){
+      dq.push_back(temp[i]->lc);
+      dq.push_back(temp[i]->rc);
+    }
+    if(level%2==1){
+      for(int i=0; i<n; i++){
+        temp[i]->lc = dq.back();
+        dq.pop_back();
+        temp[i]->rc = dq.back();
+        dq.pop_back();
+      }
+    }
+    deque<struct node *> x;
+    x.push_back(head);
+    PrintOrder(x);
+    cout<<endl;
+    level++;
+    if(!dq.empty())
+      RevLevel(head, dq);
+  }
+  else
+    return;
+}
+
 int main(int argc, char const *argv[]) {
   struct node *head = newNode(1); 
 
@@ -77,14 +100,24 @@ int main(int argc, char const *argv[]) {
   head->rc->rc->rc->rc  = newNode(31);
   
   deque<struct node *> q;
-  cout<<head->val<<endl;
+  q.push_back(head);
+  PrintOrder(q);
+  cout<<endl;
   
+  deque<struct node *> temp;
   if(head->lc!=NULL){
-    q.push_back(head->lc);
-    q.push_back(head->rc);
+    int t = head->lc->val;
+    head->lc->val = head->rc->val;
+    head->rc->val = t;
+    temp.push_back(head->lc);
+    temp.push_back(head->rc);
   }
   
+  RevLevel(head, temp);
+  
+  // q.push_back(head);
   PrintOrder(q);
+  cout<<endl;
   
   return 0;
 }

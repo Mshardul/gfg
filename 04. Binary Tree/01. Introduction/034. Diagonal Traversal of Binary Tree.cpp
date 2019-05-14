@@ -6,6 +6,7 @@ using namespace std;
 struct node{
   int val;
   struct node *lc, *rc;
+  bool visited;
 };
 
 struct node * newNode(int x){
@@ -13,31 +14,36 @@ struct node * newNode(int x){
   temp->val = x;
   temp->lc = NULL;
   temp->rc = NULL;
+  temp->visited = false;
   return temp;
 }
 
-void PrintOrder(deque <struct node *> q){
-  if(q.empty())
+void PrintQ(deque<struct node *> temp){
+  for(deque<struct node *>::iterator iter=temp.begin(); iter!=temp.end(); iter++)
+    cout<<(*iter)->val<<" ";
+  cout<<endl;
+}
+
+void DiagonalTraversal(deque<struct node *> *q, deque<struct node *> temp){
+  if(temp.empty())
     return;
-  deque<struct node *> temp;
-  struct node *left, *right;
-  int n = q.size();
-  for(int i=0; i<n/2; i++){
-    left = q.front();
-    q.pop_front();
-    right = q.front();
-    q.pop_front();
-    cout<<left->val<<" "<<right->val<<" ";
-    if(left->lc){
-      q.push_back(left->lc);
-      q.push_back(right->rc);
-      q.push_back(left->rc);
-      q.push_back(right->lc);
+  int n = temp.size();
+  struct node * t;
+  PrintQ(temp);
+  for(int i=0; i<n; i++){
+    t = temp.front();
+    temp.pop_front();
+    if(t->lc!=NULL){
+      struct node *x = t->lc;
+      while(x!=NULL){
+        temp.push_back(x);
+        x = x->rc;
+      }
     }
   }
-  cout<<endl;
-  PrintOrder(q);
-  
+  for(deque<struct node *>::iterator iter=temp.begin(); iter!=temp.end(); iter++)
+    q->push_back(*iter);
+  DiagonalTraversal(q, temp);
 }
 int main(int argc, char const *argv[]) {
   struct node *head = newNode(1); 
@@ -76,15 +82,20 @@ int main(int argc, char const *argv[]) {
   head->rc->rc->rc->lc  = newNode(30); 
   head->rc->rc->rc->rc  = newNode(31);
   
-  deque<struct node *> q;
-  cout<<head->val<<endl;
+  deque<struct node*> q;
+  struct node * temp = head;
   
-  if(head->lc!=NULL){
-    q.push_back(head->lc);
-    q.push_back(head->rc);
+  while(temp!=NULL){
+    q.push_back(temp);
+    temp = temp->rc;
   }
   
-  PrintOrder(q);
+  DiagonalTraversal(&q, q);
+  
+  for(deque<struct node *>::iterator iter = q.begin(); iter!=q.end(); iter++)
+    cout<<((*iter)->val)<<" ";
+    
+  cout<<endl;
   
   return 0;
 }

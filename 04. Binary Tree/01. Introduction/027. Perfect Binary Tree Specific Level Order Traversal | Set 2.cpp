@@ -16,27 +16,35 @@ struct node * newNode(int x){
   return temp;
 }
 
-void PrintOrder(deque <struct node *> q){
-  if(q.empty())
-    return;
-  deque<struct node *> temp;
+void PrintOrder(deque <struct node *> *q, deque <struct node *> temp){
   struct node *left, *right;
-  int n = q.size();
+  // deque<struct node *> tempQ;
+  int n = temp.size();
   for(int i=0; i<n/2; i++){
-    left = q.front();
-    q.pop_front();
-    right = q.front();
-    q.pop_front();
-    cout<<left->val<<" "<<right->val<<" ";
-    if(left->lc){
-      q.push_back(left->lc);
-      q.push_back(right->rc);
-      q.push_back(left->rc);
-      q.push_back(right->lc);
+    left = temp.front();
+    temp.pop_front();
+    right = temp.front();
+    temp.pop_front();
+    cout<<"--> "<<left->val<<" "<<right->val<<endl;
+    if(left->lc!=NULL){
+      temp.push_back(left->lc);
+      temp.push_back(right->rc);
+      temp.push_back(left->rc);
+      temp.push_back(right->lc);
     }
   }
-  cout<<endl;
-  PrintOrder(q);
+  // while(!temp.empty()){
+  //   q->push_front(temp.back());
+  //   temp.pop_back();
+  // }
+  for(deque<struct node *>::reverse_iterator iter = temp.rbegin(); iter!=temp.rend(); iter++){
+    q->push_front(*iter);
+  }
+    
+  if(!temp.empty()){
+    cout<<"nothing found\n";
+    PrintOrder(q, temp);
+  }
   
 }
 int main(int argc, char const *argv[]) {
@@ -77,14 +85,25 @@ int main(int argc, char const *argv[]) {
   head->rc->rc->rc->rc  = newNode(31);
   
   deque<struct node *> q;
-  cout<<head->val<<endl;
+  deque<struct node *> temp;
+  
+  q.push_back(head);
   
   if(head->lc!=NULL){
-    q.push_back(head->lc);
-    q.push_back(head->rc);
+    q.push_front(head->rc);
+    q.push_front(head->lc);
+    temp.push_back(head->lc);
+    temp.push_back(head->rc);
+    PrintOrder(&q, temp);
   }
   
-  PrintOrder(q);
+  
+  while(!q.empty()){
+    cout<<q.front()->val<<" ";
+    q.pop_front();
+  }
+  
+  cout<<endl;
   
   return 0;
 }

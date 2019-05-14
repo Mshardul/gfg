@@ -1,11 +1,12 @@
 #include<iostream>
-#include<deque>
+#include<stack>
 
 using namespace std;
 
 struct node{
   int val;
   struct node *lc, *rc;
+  bool visited;
 };
 
 struct node * newNode(int x){
@@ -13,31 +14,64 @@ struct node * newNode(int x){
   temp->val = x;
   temp->lc = NULL;
   temp->rc = NULL;
+  temp->visited = false;
   return temp;
 }
 
-void PrintOrder(deque <struct node *> q){
-  if(q.empty())
-    return;
-  deque<struct node *> temp;
-  struct node *left, *right;
-  int n = q.size();
-  for(int i=0; i<n/2; i++){
-    left = q.front();
-    q.pop_front();
-    right = q.front();
-    q.pop_front();
-    cout<<left->val<<" "<<right->val<<" ";
-    if(left->lc){
-      q.push_back(left->lc);
-      q.push_back(right->rc);
-      q.push_back(left->rc);
-      q.push_back(right->lc);
+void Method1(struct node * head){
+  stack<struct node *> st;
+  st.push(head);
+  head->visited = true;
+  
+  struct node *left, *right, *temp;
+  while(!st.empty()){
+    temp = st.top();
+    left = temp->lc;
+    right = temp->rc;
+    if((!left || left->visited==true) && (!right || right->visited==true)){
+      cout<<temp->val<<" ";
+      st.pop();
+      continue;
+    }
+    if(right!=NULL && right->visited==false){
+      st.push(right);
+      right->visited = true;
+    }
+    if(left!=NULL && left->visited==false){
+      st.push(left);
+      left->visited = true;
     }
   }
   cout<<endl;
-  PrintOrder(q);
+}
+
+void Method2(struct node * head){
+  stack<struct node *> st;
+  st.push(head);
   
+  struct node* temp = head;
+  while(!st.empty()){
+    temp = st.top();
+    st.pop();
+    if(!st.empty() && temp==st.top()){
+      cout<<temp->val<<" ";
+      st.pop();
+      continue;
+    }
+    else{
+      st.push(temp);
+    }
+    if(temp->lc==NULL && temp->rc==NULL){
+      cout<<temp->val<<" ";
+      st.pop();
+    }else{
+      st.push(temp);
+      if(temp->rc!=NULL)
+        st.push(temp->rc);
+      if(temp->lc!=NULL)
+        st.push(temp->lc);
+    }    
+  }
 }
 int main(int argc, char const *argv[]) {
   struct node *head = newNode(1); 
@@ -76,15 +110,7 @@ int main(int argc, char const *argv[]) {
   head->rc->rc->rc->lc  = newNode(30); 
   head->rc->rc->rc->rc  = newNode(31);
   
-  deque<struct node *> q;
-  cout<<head->val<<endl;
-  
-  if(head->lc!=NULL){
-    q.push_back(head->lc);
-    q.push_back(head->rc);
-  }
-  
-  PrintOrder(q);
+  Method2(head);
   
   return 0;
 }
