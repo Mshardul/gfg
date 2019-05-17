@@ -26,14 +26,14 @@ void AddNode(struct node **head, int val){
   x->next = temp;
 }
 
-void PrintReverse(struct node *head){
+void PrintReverse(struct node *head){ //just printing reverse, not reversing the ll
   if(head==NULL)
     return;
   PrintReverse(head->next);
   cout<<head->val<<" ";
 }
 
-void Reverse(struct node **head){ //cant think of anything using recursion
+void Reverse(struct node **head){ //cant think of anything using recursion 
   if((*head)->next == NULL)
     return;
   struct node *curr = *head;
@@ -55,6 +55,9 @@ void Print(struct node *head){
   cout<<head->val<<" ";
   Print(head->next);
 }
+
+void ReverseRecursion(struct node **head, struct node **end); //(head, NULL) : each recursion reverses end->head into head->end. and returns the next node, to be added as end->next;
+
 int main(int argc, char const *argv[]) {
   struct node *head = NULL;
   
