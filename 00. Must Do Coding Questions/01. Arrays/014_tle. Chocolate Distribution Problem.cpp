@@ -1,3 +1,5 @@
+//constraints: t(100), n(10^7) -> so, should be linear
+
 #include<iostream>
 #include<vector>
 
